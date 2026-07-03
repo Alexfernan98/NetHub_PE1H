@@ -19,11 +19,16 @@ CERT_DIR="$(dirname "$0")/../nginx/certs"
 mkdir -p "$CERT_DIR"
 
 if [[ -f "$CERT_DIR/server.crt" && -f "$CERT_DIR/server.key" ]]; then
-  echo "⚠  Ya existen certs en $CERT_DIR. Borralos antes si querés regenerar."
+  echo "⚠  Ya existen certs en $CERT_DIR."
+  echo "   Para regenerar (ej. aplicar cobertura por IP): rm $CERT_DIR/server.{crt,key} y volvé a correr."
   exit 0
 fi
 
 SERVER_IP="${1:-${SERVER_IP:-}}"
+if [[ -n "$SERVER_IP" && ! "$SERVER_IP" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]]; then
+  echo "✗ SERVER_IP inválida: '$SERVER_IP'. Esperado formato IPv4 (ej. 10.0.0.5)." >&2
+  exit 1
+fi
 SAN="DNS:*.nip.io,DNS:localhost,IP:127.0.0.1,IP:0.0.0.0"
 if [[ -n "$SERVER_IP" ]]; then
   DASHED="${SERVER_IP//./-}"

@@ -27,7 +27,7 @@ const PERSON_SELECT = { id: true, name: true, nameFirst: true, nameLast: true, e
 const ASSET_SELECT  = {
   id: true, tag: true, brand: true, model: true, serialNumber: true,
   macWifi: true, macEth: true, operatingSystem: true, details: true,
-  cpu: true, gpu: true, ram: true, storage: true,
+  cpu: true, gpu: true, ram: true, storage: true, shared: true,
 };
 const ACTA_INCLUDE = {
   asset:    { select: { ...ASSET_SELECT, category: { select: { slug: true, name: true } } } },
