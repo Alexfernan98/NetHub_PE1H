@@ -168,6 +168,10 @@ model Asset {
   macWifi           String?
   macEth            String?
   operatingSystem   String?
+  cpu               String?        // Procesador — desktop / notebook / server
+  gpu               String?        // Placa de video
+  ram               String?        // Memoria RAM (texto libre, ej. "16 GB DDR4")
+  storage           String?        // Almacenamiento (texto libre, ej. "512 GB SSD")
   status            AssetStatus    @default(AVAILABLE)
   condition         AssetCondition @default(GOOD)
   departmentSlug    String?

@@ -57,7 +57,7 @@ function isInfraCategory(slug) {
 }
 
 // Campos string de Networking/CCTV/DC editables y creables.
-const EXTRA_STRING_FIELDS = ['ipManagement', 'internalCode', 'nvrChannel', 'cameraType', 'role', 'haMode', 'haPeerAssetId', 'displayLocation'];
+const EXTRA_STRING_FIELDS = ['ipManagement', 'internalCode', 'nvrChannel', 'cameraType', 'role', 'haMode', 'haPeerAssetId', 'displayLocation', 'cpu', 'gpu', 'ram', 'storage'];
 // Campos enteros (se parsean aparte).
 const EXTRA_INT_FIELDS = ['megapixels', 'ports'];
 
@@ -334,6 +334,10 @@ router.post('/', authenticate, requireRole('IT_TECH'), async (req, res, next) =>
           macWifi: b.macWifi || null,
           macEth: b.macEth || null,
           operatingSystem: b.operatingSystem || null,
+          cpu:             b.cpu || null,
+          gpu:             b.gpu || null,
+          ram:             b.ram || null,
+          storage:         b.storage || null,
           status: ['AVAILABLE', 'REPAIR', 'DAMAGED', 'LOAN'].includes(b.status) ? b.status : 'AVAILABLE',
           condition: ['GOOD', 'FAIR', 'POOR', 'DAMAGED'].includes(b.condition) ? b.condition : 'GOOD',
           locationSlug: b.locationSlug || null,

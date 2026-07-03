@@ -394,6 +394,10 @@ function AssetDrawer({ id, canWrite, users, locs, depts, onClose, onRefresh }) {
             {vis.includes('macWifi')         && <KV label="MAC WiFi"><span className="font-mono">{asset.macWifi || '—'}</span></KV>}
             {vis.includes('macEth')          && <KV label="MAC Ethernet"><span className="font-mono">{asset.macEth || '—'}</span></KV>}
             {vis.includes('operatingSystem') && <KV label="Sistema operativo">{asset.operatingSystem || '—'}</KV>}
+            {vis.includes('cpu')             && <KV label="Procesador (CPU)">{asset.cpu || '—'}</KV>}
+            {vis.includes('ram')             && <KV label="Memoria RAM">{asset.ram || '—'}</KV>}
+            {vis.includes('storage')         && <KV label="Almacenamiento">{asset.storage || '—'}</KV>}
+            {vis.includes('gpu')             && <KV label="Placa de video (GPU)">{asset.gpu || '—'}</KV>}
             <KV label="Accesorios">{asset.accessories || '—'}</KV>
             <KV label="Evidencia">{asset.evidenceFolderUrl ? <a href={asset.evidenceFolderUrl} target="_blank" rel="noreferrer" className="text-blue-600">Abrir</a> : '—'}</KV>
             <div className="pt-3"><p className="text-sm text-slate-500 mb-1">Detalles</p><p className="text-sm text-slate-700 whitespace-pre-wrap">{asset.details || '—'}</p></div>
@@ -493,7 +497,7 @@ function BarcodeField({ value, onChange }) {
 }
 
 function NewAssetModal({ open, cats, locs, depts, onClose, onSaved }) {
-  const empty = { categorySlug: '', barcode: '', brand: '', model: '', serialNumber: '', operatingSystem: '', macWifi: '', macEth: '', imei: '', status: 'AVAILABLE', condition: 'GOOD', locationSlug: '', departmentSlug: '', purchaseDate: '', warrantyUntil: '', vendor: '', details: '', shared: false, ipManagement: '', internalCode: '', nvrChannel: '', cameraType: '', megapixels: '', ports: '', role: '', haMode: '', haPeerAssetId: '', displayLocation: '' };
+  const empty = { categorySlug: '', barcode: '', brand: '', model: '', serialNumber: '', operatingSystem: '', cpu: '', gpu: '', ram: '', storage: '', macWifi: '', macEth: '', imei: '', status: 'AVAILABLE', condition: 'GOOD', locationSlug: '', departmentSlug: '', purchaseDate: '', warrantyUntil: '', vendor: '', details: '', shared: false, ipManagement: '', internalCode: '', nvrChannel: '', cameraType: '', megapixels: '', ports: '', role: '', haMode: '', haPeerAssetId: '', displayLocation: '' };
   const [form, setForm] = useState(empty);
   const [nextTag, setNextTag] = useState('');
   const [busy, setBusy] = useState(false);
@@ -539,7 +543,7 @@ function NewAssetModal({ open, cats, locs, depts, onClose, onSaved }) {
 
 function EditAssetModal({ asset, locs, depts, onClose, onSaved }) {
   const catSlug = asset.categorySlug || asset.category?.slug;
-  const [form, setForm] = useState({ barcode: asset.barcode || '', brand: asset.brand || '', model: asset.model || '', serialNumber: asset.serialNumber || '', operatingSystem: asset.operatingSystem || '', macWifi: asset.macWifi || '', macEth: asset.macEth || '', imei: asset.imei || '', locationSlug: asset.locationSlug || '', departmentSlug: asset.departmentSlug || '', vendor: asset.vendor || '', warrantyUntil: asset.warrantyUntil ? asset.warrantyUntil.slice(0, 10) : '', details: asset.details || '', notes: asset.notes || '', shared: asset.shared === true, ipManagement: asset.ipManagement || '', internalCode: asset.internalCode || '', nvrChannel: asset.nvrChannel || '', cameraType: asset.cameraType || '', megapixels: asset.megapixels ?? '', ports: asset.ports ?? '', role: asset.role || '', haMode: asset.haMode || '', haPeerAssetId: asset.haPeerAssetId || '', displayLocation: asset.displayLocation || '' });
+  const [form, setForm] = useState({ barcode: asset.barcode || '', brand: asset.brand || '', model: asset.model || '', serialNumber: asset.serialNumber || '', operatingSystem: asset.operatingSystem || '', cpu: asset.cpu || '', gpu: asset.gpu || '', ram: asset.ram || '', storage: asset.storage || '', macWifi: asset.macWifi || '', macEth: asset.macEth || '', imei: asset.imei || '', locationSlug: asset.locationSlug || '', departmentSlug: asset.departmentSlug || '', vendor: asset.vendor || '', warrantyUntil: asset.warrantyUntil ? asset.warrantyUntil.slice(0, 10) : '', details: asset.details || '', notes: asset.notes || '', shared: asset.shared === true, ipManagement: asset.ipManagement || '', internalCode: asset.internalCode || '', nvrChannel: asset.nvrChannel || '', cameraType: asset.cameraType || '', megapixels: asset.megapixels ?? '', ports: asset.ports ?? '', role: asset.role || '', haMode: asset.haMode || '', haPeerAssetId: asset.haPeerAssetId || '', displayLocation: asset.displayLocation || '' });
   const [busy, setBusy] = useState(false);
   const submit = async () => {
     setBusy(true);

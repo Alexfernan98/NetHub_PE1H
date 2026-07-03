@@ -25,6 +25,10 @@ export function AssetFieldset({ form, setForm, categorySlug, locs = [], depts = 
       {visible.includes('serialNumber')    && <Field label="Número de serie"><input value={form.serialNumber || ''} onChange={set('serialNumber')} className={`${inputCls} font-mono`} /></Field>}
       {visible.includes('imei')            && <Field label="IMEI"><input value={form.imei || ''} onChange={set('imei')} className={`${inputCls} font-mono`} /></Field>}
       {visible.includes('operatingSystem') && <Field label="Sistema operativo"><input value={form.operatingSystem || ''} onChange={set('operatingSystem')} className={inputCls} /></Field>}
+      {visible.includes('cpu')             && <Field label="Procesador (CPU)"><input value={form.cpu || ''} onChange={set('cpu')} placeholder="Intel Core i5-1135G7" className={inputCls} /></Field>}
+      {visible.includes('ram')             && <Field label="Memoria RAM"><input value={form.ram || ''} onChange={set('ram')} placeholder="16 GB DDR4" className={inputCls} /></Field>}
+      {visible.includes('storage')         && <Field label="Almacenamiento"><input value={form.storage || ''} onChange={set('storage')} placeholder="512 GB SSD" className={inputCls} /></Field>}
+      {visible.includes('gpu')             && <Field label="Placa de video (GPU)"><input value={form.gpu || ''} onChange={set('gpu')} placeholder="NVIDIA RTX 3050 / Integrada" className={inputCls} /></Field>}
       {visible.includes('macWifi')         && <Field label="MAC WiFi"><input value={form.macWifi || ''} onChange={set('macWifi')} placeholder="AA:BB:CC:DD:EE:FF" className={`${inputCls} font-mono`} /></Field>}
       {visible.includes('macEth')          && <Field label="MAC Ethernet"><input value={form.macEth || ''} onChange={set('macEth')} placeholder="AA:BB:CC:DD:EE:FF" className={`${inputCls} font-mono`} /></Field>}
       {visible.includes('ipManagement')    && <Field label="IP de gestión"><input value={form.ipManagement || ''} onChange={set('ipManagement')} placeholder="10.0.0.1" className={`${inputCls} font-mono`} /></Field>}
