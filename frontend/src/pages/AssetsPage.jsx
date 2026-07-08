@@ -225,7 +225,7 @@ export default function AssetsPage() {
         </div>
       </div>
 
-      {selectedId && <AssetDrawer id={selectedId} canWrite={canWrite} users={users} locs={locs} depts={depts} onClose={() => setSelectedId(null)} onRefresh={onRefresh} />}
+      {selectedId && <AssetDrawer id={selectedId} cats={cats} canWrite={canWrite} users={users} locs={locs} depts={depts} onClose={() => setSelectedId(null)} onRefresh={onRefresh} />}
       <NewAssetModal open={showNew} cats={cats} locs={locs} depts={depts} onClose={() => setShowNew(false)} onSaved={(a) => { setShowNew(false); onRefresh(); setSelectedId(a.id); }} />
       <ImportModal open={showImport} cats={cats} locs={locs} depts={depts} onClose={() => setShowImport(false)} onDone={onRefresh} />
       <BarcodeScanner open={showScanner} onDetect={onScanned} onClose={() => setShowScanner(false)} />
@@ -238,7 +238,7 @@ function KV({ label, children }) {
   return <div className="flex justify-between gap-4 py-1.5 border-b border-slate-50 last:border-0"><dt className="text-sm text-slate-500">{label}</dt><dd className="text-sm text-slate-800 text-right">{children ?? '—'}</dd></div>;
 }
 
-function AssetDrawer({ id, canWrite, users, locs, depts, onClose, onRefresh }) {
+function AssetDrawer({ id, cats, canWrite, users, locs, depts, onClose, onRefresh }) {
   const { user: me } = useAuthStore();
   const confirm = useConfirm();
   const canDelete = ['IT_ADMIN', 'SUPER_ADMIN'].includes(me?.role);
@@ -393,7 +393,18 @@ function AssetDrawer({ id, canWrite, users, locs, depts, onClose, onRefresh }) {
             {vis.includes('imei')            && <KV label="IMEI"><span className="font-mono">{asset.imei || '—'}</span></KV>}
             {vis.includes('macWifi')         && <KV label="MAC WiFi"><span className="font-mono">{asset.macWifi || '—'}</span></KV>}
             {vis.includes('macEth')          && <KV label="MAC Ethernet"><span className="font-mono">{asset.macEth || '—'}</span></KV>}
+            {Array.isArray(asset.nics) && asset.nics.length > 0 && (
+              <KV label="NICs adicionales">
+                <div className="space-y-0.5">
+                  {asset.nics.map((n, i) => <div key={i} className="font-mono text-xs">{n.mac}{n.label ? ` · ${n.label}` : ''}{n.kind ? ` (${n.kind})` : ''}</div>)}
+                </div>
+              </KV>
+            )}
             {vis.includes('operatingSystem') && <KV label="Sistema operativo">{asset.operatingSystem || '—'}</KV>}
+            {vis.includes('cpu')             && <KV label="Procesador (CPU)">{asset.cpu || '—'}</KV>}
+            {vis.includes('ram')             && <KV label="Memoria RAM">{asset.ram || '—'}</KV>}
+            {vis.includes('storage')         && <KV label="Almacenamiento">{asset.storage || '—'}</KV>}
+            {vis.includes('gpu')             && <KV label="Placa de video (GPU)">{asset.gpu || '—'}</KV>}
             <KV label="Accesorios">{asset.accessories || '—'}</KV>
             <KV label="Evidencia">{asset.evidenceFolderUrl ? <a href={asset.evidenceFolderUrl} target="_blank" rel="noreferrer" className="text-blue-600">Abrir</a> : '—'}</KV>
             <div className="pt-3"><p className="text-sm text-slate-500 mb-1">Detalles</p><p className="text-sm text-slate-700 whitespace-pre-wrap">{asset.details || '—'}</p></div>
@@ -448,7 +459,7 @@ function AssetDrawer({ id, canWrite, users, locs, depts, onClose, onRefresh }) {
         )}
       </Drawer>
 
-      {modal === 'edit'   && <EditAssetModal asset={asset} locs={locs} depts={depts} onClose={() => setModal(null)} onSaved={() => afterMutation()} />}
+      {modal === 'edit'   && <EditAssetModal asset={asset} cats={cats} locs={locs} depts={depts} onClose={() => setModal(null)} onSaved={() => afterMutation()} />}
       {modal === 'assign' && <AssignModal asset={asset} users={users} depts={depts} onClose={() => setModal(null)} onDone={(uid, extra) => afterMutation({ type: 'DELIVERY', assetId: asset.id, receptorId: uid, conditionAfter: asset.condition, authorizedUsers: extra?.authorizedUsers })} />}
       {modal === 'return' && <ReturnModal asset={asset} onClose={() => setModal(null)} onDone={(cond, returnerId) => afterMutation({ type: 'RETURN', assetId: asset.id, receptorId: returnerId || asset.assignedTo?.id, conditionBefore: asset.condition, conditionAfter: cond })} />}
       {modal === 'status' && <StatusModal asset={asset} onClose={() => setModal(null)} onDone={() => afterMutation()} />}
@@ -493,7 +504,7 @@ function BarcodeField({ value, onChange }) {
 }
 
 function NewAssetModal({ open, cats, locs, depts, onClose, onSaved }) {
-  const empty = { categorySlug: '', barcode: '', brand: '', model: '', serialNumber: '', operatingSystem: '', macWifi: '', macEth: '', imei: '', status: 'AVAILABLE', condition: 'GOOD', locationSlug: '', departmentSlug: '', purchaseDate: '', warrantyUntil: '', vendor: '', details: '', shared: false, ipManagement: '', internalCode: '', nvrChannel: '', cameraType: '', megapixels: '', ports: '', role: '', haMode: '', haPeerAssetId: '', displayLocation: '' };
+  const empty = { categorySlug: '', barcode: '', brand: '', model: '', serialNumber: '', operatingSystem: '', cpu: '', gpu: '', ram: '', storage: '', nics: [], macWifi: '', macEth: '', imei: '', status: 'AVAILABLE', condition: 'GOOD', locationSlug: '', departmentSlug: '', purchaseDate: '', warrantyUntil: '', vendor: '', details: '', shared: false, ipManagement: '', internalCode: '', nvrChannel: '', cameraType: '', megapixels: '', ports: '', role: '', haMode: '', haPeerAssetId: '', displayLocation: '' };
   const [form, setForm] = useState(empty);
   const [nextTag, setNextTag] = useState('');
   const [busy, setBusy] = useState(false);
@@ -537,28 +548,57 @@ function NewAssetModal({ open, cats, locs, depts, onClose, onSaved }) {
   );
 }
 
-function EditAssetModal({ asset, locs, depts, onClose, onSaved }) {
-  const catSlug = asset.categorySlug || asset.category?.slug;
-  const [form, setForm] = useState({ barcode: asset.barcode || '', brand: asset.brand || '', model: asset.model || '', serialNumber: asset.serialNumber || '', operatingSystem: asset.operatingSystem || '', macWifi: asset.macWifi || '', macEth: asset.macEth || '', imei: asset.imei || '', locationSlug: asset.locationSlug || '', departmentSlug: asset.departmentSlug || '', vendor: asset.vendor || '', warrantyUntil: asset.warrantyUntil ? asset.warrantyUntil.slice(0, 10) : '', details: asset.details || '', notes: asset.notes || '', shared: asset.shared === true, ipManagement: asset.ipManagement || '', internalCode: asset.internalCode || '', nvrChannel: asset.nvrChannel || '', cameraType: asset.cameraType || '', megapixels: asset.megapixels ?? '', ports: asset.ports ?? '', role: asset.role || '', haMode: asset.haMode || '', haPeerAssetId: asset.haPeerAssetId || '', displayLocation: asset.displayLocation || '' });
+function EditAssetModal({ asset, cats, locs, depts, onClose, onSaved }) {
+  const originalCat = asset.categorySlug || asset.category?.slug || '';
+  const [categorySlug, setCategorySlug] = useState(originalCat);
+  const [form, setForm] = useState({ barcode: asset.barcode || '', brand: asset.brand || '', model: asset.model || '', serialNumber: asset.serialNumber || '', operatingSystem: asset.operatingSystem || '', cpu: asset.cpu || '', gpu: asset.gpu || '', ram: asset.ram || '', storage: asset.storage || '', nics: Array.isArray(asset.nics) ? asset.nics : [], macWifi: asset.macWifi || '', macEth: asset.macEth || '', imei: asset.imei || '', locationSlug: asset.locationSlug || '', departmentSlug: asset.departmentSlug || '', vendor: asset.vendor || '', warrantyUntil: asset.warrantyUntil ? asset.warrantyUntil.slice(0, 10) : '', details: asset.details || '', notes: asset.notes || '', shared: asset.shared === true, ipManagement: asset.ipManagement || '', internalCode: asset.internalCode || '', nvrChannel: asset.nvrChannel || '', cameraType: asset.cameraType || '', megapixels: asset.megapixels ?? '', ports: asset.ports ?? '', role: asset.role || '', haMode: asset.haMode || '', haPeerAssetId: asset.haPeerAssetId || '', displayLocation: asset.displayLocation || '' });
   const [busy, setBusy] = useState(false);
+  const [regen, setRegen] = useState(false);
+  const catChanged = categorySlug !== originalCat;
+
   const submit = async () => {
     setBusy(true);
-    try { await assetsApi.update(asset.id, form); toast.success('Activo actualizado'); onSaved(); }
+    try { await assetsApi.update(asset.id, { ...form, categorySlug }); toast.success('Activo actualizado'); onSaved(); }
     catch (e) { toast.error(e.response?.data?.error || e.message); }
     finally { setBusy(false); }
   };
+  // Guarda el cambio (incluida la nueva categoría) y re-emite el TAG. El backend
+  // lo bloquea si el activo ya tiene actas.
+  const regenerateTag = async () => {
+    setRegen(true);
+    try {
+      await assetsApi.update(asset.id, { ...form, categorySlug });
+      const a = await assetsApi.regenerateTag(asset.id);
+      toast.success(`TAG regenerado: ${a.tag}`);
+      onSaved();
+    } catch (e) { toast.error(e.response?.data?.error || e.message); setRegen(false); }
+  };
+
   return (
     <Modal open onClose={onClose} title={`Editar ${asset.tag}`} width={620}
       footer={<div className="flex justify-end gap-2"><button onClick={onClose} className="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button><button onClick={submit} disabled={busy} className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg disabled:opacity-50">Guardar</button></div>}>
       <div className="grid grid-cols-2 gap-3">
+        <Field label="Tipo (categoría)">
+          <select value={categorySlug} onChange={e => setCategorySlug(e.target.value)} className={inputCls}>
+            {cats.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+          </select>
+        </Field>
+        <Field label="TAG"><input value={asset.tag} readOnly className={`${inputCls} bg-slate-50 font-mono`} /></Field>
+        {catChanged && (
+          <div className="col-span-2 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">
+            Cambiaste el tipo. El TAG <span className="font-mono">{asset.tag}</span> se mantiene (conserva actas y etiquetas físicas).
+            <button type="button" onClick={regenerateTag} disabled={regen} className="ml-2 underline font-medium disabled:opacity-50">Regenerar TAG al nuevo tipo</button>
+            <span className="block mt-1 text-amber-700">Usalo solo si el equipo no tiene actas ni etiqueta pegada. Guarda el cambio automáticamente.</span>
+          </div>
+        )}
         <div className="col-span-2">
           <Field label="Código de barras (opcional · 6 dígitos)">
             <BarcodeField value={form.barcode} onChange={(v) => setForm({ ...form, barcode: v })} />
           </Field>
         </div>
-        <AssetFieldset form={form} setForm={setForm} categorySlug={catSlug} locs={locs} depts={depts} show={{ condition: false }} />
+        <AssetFieldset form={form} setForm={setForm} categorySlug={categorySlug} locs={locs} depts={depts} show={{ condition: false }} />
         <div className="col-span-2"><Field label="Observaciones"><textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={2} className={inputCls} /></Field></div>
-        {isAssignable(catSlug) && (
+        {isAssignable(categorySlug) && (
           <div className="col-span-2">
             <label className="flex items-start gap-2 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer">
               <input type="checkbox" checked={form.shared} onChange={e => setForm({ ...form, shared: e.target.checked })} className="mt-0.5" />

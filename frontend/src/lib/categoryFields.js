@@ -14,15 +14,15 @@
 //   Servidores/DC: server, ups, rack
 
 const ALL = [
-  'brand', 'model', 'serialNumber', 'operatingSystem', 'macWifi', 'macEth', 'imei',
+  'brand', 'model', 'serialNumber', 'operatingSystem', 'cpu', 'gpu', 'ram', 'storage', 'macWifi', 'macEth', 'imei',
   'ipManagement', 'internalCode', 'nvrChannel', 'cameraType', 'megapixels',
   'ports', 'role', 'haMode', 'haPeerAssetId', 'displayLocation',
 ];
 
 const MAP = {
   // ── IT ──────────────────────────────────────────────────────────────────
-  desktop:  ['brand', 'model', 'serialNumber', 'operatingSystem', 'macWifi', 'macEth'],
-  notebook: ['brand', 'model', 'serialNumber', 'operatingSystem', 'macWifi', 'macEth'],
+  desktop:  ['brand', 'model', 'serialNumber', 'operatingSystem', 'cpu', 'gpu', 'ram', 'storage', 'macWifi', 'macEth'],
+  notebook: ['brand', 'model', 'serialNumber', 'operatingSystem', 'cpu', 'gpu', 'ram', 'storage', 'macWifi', 'macEth'],
   monitor:  ['brand', 'model', 'serialNumber'],
   printer:  ['brand', 'model', 'serialNumber', 'ipManagement', 'macWifi', 'macEth'],
   tv:       ['brand', 'model', 'serialNumber', 'macWifi'],
@@ -39,7 +39,7 @@ const MAP = {
   // ── CCTV ──────────────────────────────────────────────────────────────────
   camera:   ['brand', 'model', 'serialNumber', 'internalCode', 'cameraType', 'megapixels', 'nvrChannel', 'ipManagement', 'displayLocation'],
   // ── Servidores / DC ───────────────────────────────────────────────────────
-  server:   ['brand', 'model', 'serialNumber', 'ipManagement', 'operatingSystem', 'role', 'displayLocation'],
+  server:   ['brand', 'model', 'serialNumber', 'ipManagement', 'operatingSystem', 'cpu', 'gpu', 'ram', 'storage', 'role', 'displayLocation'],
   ups:      ['brand', 'model', 'serialNumber', 'displayLocation'],
   rack:     ['brand', 'model', 'displayLocation'],
 };
@@ -97,6 +97,10 @@ export const FIELD_LABELS = {
   model:           'Modelo',
   serialNumber:    'N° de serie',
   operatingSystem: 'Sistema operativo',
+  cpu:             'Procesador (CPU)',
+  gpu:             'Placa de video (GPU)',
+  ram:             'Memoria RAM',
+  storage:         'Almacenamiento',
   macWifi:         'MAC WiFi',
   macEth:          'MAC Ethernet',
   imei:            'IMEI',

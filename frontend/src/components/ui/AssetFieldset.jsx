@@ -17,7 +17,13 @@ export function AssetFieldset({ form, setForm, categorySlug, locs = [], depts = 
   const visible = fieldsForCategory(categorySlug);
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const roles = roleOptions(categorySlug);
-  const s = { condition: true, location: true, department: true, vendor: true, warranty: true, purchaseDate: false, details: true, ...show };
+  const s = { condition: true, location: true, department: true, vendor: true, warranty: true, purchaseDate: false, details: true, nics: true, ...show };
+  const nics = Array.isArray(form.nics) ? form.nics : [];
+  const setNics = (arr) => setForm({ ...form, nics: arr });
+  const setNic = (i, k) => (e) => setNics(nics.map((n, j) => (j === i ? { ...n, [k]: e.target.value } : n)));
+  const addNic = () => setNics([...nics, { kind: 'eth', mac: '', label: '' }]);
+  const removeNic = (i) => () => setNics(nics.filter((_, j) => j !== i));
+  const nicInput = 'px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500';
   return (
     <>
       {visible.includes('brand')           && <Field label="Marca"><input value={form.brand || ''} onChange={set('brand')} className={inputCls} /></Field>}
@@ -25,8 +31,32 @@ export function AssetFieldset({ form, setForm, categorySlug, locs = [], depts = 
       {visible.includes('serialNumber')    && <Field label="Número de serie"><input value={form.serialNumber || ''} onChange={set('serialNumber')} className={`${inputCls} font-mono`} /></Field>}
       {visible.includes('imei')            && <Field label="IMEI"><input value={form.imei || ''} onChange={set('imei')} className={`${inputCls} font-mono`} /></Field>}
       {visible.includes('operatingSystem') && <Field label="Sistema operativo"><input value={form.operatingSystem || ''} onChange={set('operatingSystem')} className={inputCls} /></Field>}
+      {visible.includes('cpu')             && <Field label="Procesador (CPU)"><input value={form.cpu || ''} onChange={set('cpu')} placeholder="Intel Core i5-1135G7" className={inputCls} /></Field>}
+      {visible.includes('ram')             && <Field label="Memoria RAM"><input value={form.ram || ''} onChange={set('ram')} placeholder="16 GB DDR4" className={inputCls} /></Field>}
+      {visible.includes('storage')         && <Field label="Almacenamiento"><input value={form.storage || ''} onChange={set('storage')} placeholder="512 GB SSD" className={inputCls} /></Field>}
+      {visible.includes('gpu')             && <Field label="Placa de video (GPU)"><input value={form.gpu || ''} onChange={set('gpu')} placeholder="NVIDIA RTX 3050 / Integrada" className={inputCls} /></Field>}
       {visible.includes('macWifi')         && <Field label="MAC WiFi"><input value={form.macWifi || ''} onChange={set('macWifi')} placeholder="AA:BB:CC:DD:EE:FF" className={`${inputCls} font-mono`} /></Field>}
       {visible.includes('macEth')          && <Field label="MAC Ethernet"><input value={form.macEth || ''} onChange={set('macEth')} placeholder="AA:BB:CC:DD:EE:FF" className={`${inputCls} font-mono`} /></Field>}
+      {s.nics !== false && (visible.includes('macEth') || visible.includes('macWifi')) && (
+        <div className="col-span-2">
+          <label className="text-xs font-medium text-slate-500">NICs adicionales</label>
+          <div className="space-y-2 mt-1">
+            {nics.map((nic, i) => (
+              <div key={i} className="flex gap-2 items-center">
+                <select value={nic.kind || 'eth'} onChange={setNic(i, 'kind')} className={`${nicInput} w-28`}>
+                  <option value="eth">Ethernet</option>
+                  <option value="wifi">WiFi</option>
+                  <option value="other">Otra</option>
+                </select>
+                <input value={nic.mac || ''} onChange={setNic(i, 'mac')} placeholder="AA:BB:CC:DD:EE:FF" className={`${nicInput} flex-1 font-mono`} />
+                <input value={nic.label || ''} onChange={setNic(i, 'label')} placeholder="Etiqueta (opc.)" className={`${nicInput} w-36`} />
+                <button type="button" onClick={removeNic(i)} className="px-2 py-1 text-slate-400 hover:text-rose-500 text-sm">✕</button>
+              </div>
+            ))}
+            <button type="button" onClick={addNic} className="text-sm text-blue-600 hover:text-blue-700 font-medium">+ Agregar NIC</button>
+          </div>
+        </div>
+      )}
       {visible.includes('ipManagement')    && <Field label="IP de gestión"><input value={form.ipManagement || ''} onChange={set('ipManagement')} placeholder="10.0.0.1" className={`${inputCls} font-mono`} /></Field>}
       {visible.includes('ports')           && <Field label="N° de puertos"><input type="number" min="0" value={form.ports ?? ''} onChange={set('ports')} className={inputCls} /></Field>}
       {visible.includes('role')            && <Field label="Rol"><select value={form.role || ''} onChange={set('role')} className={inputCls}><option value="">—</option>{roles.map(r => <option key={r} value={r}>{r}</option>)}</select></Field>}

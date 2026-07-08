@@ -54,8 +54,15 @@ function techTable(asset) {
     ['MAC WiFi', asset.macWifi],
     ['MAC Ethernet', asset.macEth],
     ['Sistema operativo', asset.operatingSystem],
+    ['Procesador (CPU)', asset.cpu],
+    ['Memoria RAM', asset.ram],
+    ['Almacenamiento', asset.storage],
+    ['Placa de video (GPU)', asset.gpu],
     ['Especificaciones', asset.details],
   ].filter(([, v, always]) => always || (v != null && String(v).trim() !== ''));
+  if (Array.isArray(asset.nics)) {
+    for (const n of asset.nics) if (n && n.mac) rows.push([`MAC adicional${n.label ? ` · ${n.label}` : ''}`, n.mac]);
+  }
   return `<table class="tech">
     ${rows.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}
   </table>`;
@@ -145,8 +152,8 @@ function authorizedUsersBlock(acta) {
   return `<h3>Usuarios autorizados a operar el equipo</h3>
     <p class="declare">El presente activo se entrega bajo la modalidad de <strong>equipo compartido</strong>. El receptor arriba indicado es el responsable administrativo del equipo. Quedan autorizados a operarlo, dentro del marco de sus funciones, los siguientes usuarios:</p>
     <table class="tech">
-      <tr><th style="width:60%">Nombre</th><th>C.I.</th></tr>
-      ${users.map(u => `<tr><td>${esc(u.name)}</td><td>${esc(u.ci || '—')}</td></tr>`).join('')}
+      <tr><th style="width:45%">Nombre</th><th style="width:20%">C.I.</th><th>Firma</th></tr>
+      ${users.map(u => `<tr><td>${esc(u.name)}</td><td>${esc(u.ci || '—')}</td><td style="height:46px"></td></tr>`).join('')}
     </table>`;
 }
 
