@@ -427,6 +427,12 @@ router.patch('/:id', authenticate, requireRole('IT_TECH'), async (req, res, next
     if (b.categorySlug !== undefined && b.categorySlug !== before.categorySlug) {
       const cat = await prisma.assetCategory.findUnique({ where: { slug: b.categorySlug } });
       if (!cat) return res.status(400).json({ error: 'Categoría inválida' });
+      // Pasar a infraestructura un activo con asignación activa lo dejaría "asignado"
+      // sin forma de devolverlo por UI → exigir devolución previa.
+      if (isInfraCategory(b.categorySlug)) {
+        const open = await prisma.assetAssignment.findFirst({ where: { assetId: id, returnedAt: null } });
+        if (open) return res.status(409).json({ error: 'Este activo está asignado. Devolvé el equipo antes de cambiarlo a un tipo de infraestructura.' });
+      }
       data.categorySlug = b.categorySlug;
     }
     if (b.nics !== undefined) data.nics = normalizeNics(b.nics);

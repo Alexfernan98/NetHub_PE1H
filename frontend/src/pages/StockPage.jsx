@@ -394,7 +394,7 @@ function DeployModal({ item, catName, locs, depts, onClose, onDone }) {
           {assignable && ' Después lo asignás a un funcionario desde Inventario (con su acta de entrega).'}
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <AssetFieldset form={form} setForm={setForm} categorySlug={item.categorySlug} locs={locs} depts={depts} />
+          <AssetFieldset form={form} setForm={setForm} categorySlug={item.categorySlug} locs={locs} depts={depts} show={{ nics: false }} />
           <div className="col-span-2"><Field label="Observaciones"><textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={2} className={inputCls} /></Field></div>
         </div>
       </div>

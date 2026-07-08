@@ -17,7 +17,7 @@ export function AssetFieldset({ form, setForm, categorySlug, locs = [], depts = 
   const visible = fieldsForCategory(categorySlug);
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const roles = roleOptions(categorySlug);
-  const s = { condition: true, location: true, department: true, vendor: true, warranty: true, purchaseDate: false, details: true, ...show };
+  const s = { condition: true, location: true, department: true, vendor: true, warranty: true, purchaseDate: false, details: true, nics: true, ...show };
   const nics = Array.isArray(form.nics) ? form.nics : [];
   const setNics = (arr) => setForm({ ...form, nics: arr });
   const setNic = (i, k) => (e) => setNics(nics.map((n, j) => (j === i ? { ...n, [k]: e.target.value } : n)));
@@ -37,7 +37,7 @@ export function AssetFieldset({ form, setForm, categorySlug, locs = [], depts = 
       {visible.includes('gpu')             && <Field label="Placa de video (GPU)"><input value={form.gpu || ''} onChange={set('gpu')} placeholder="NVIDIA RTX 3050 / Integrada" className={inputCls} /></Field>}
       {visible.includes('macWifi')         && <Field label="MAC WiFi"><input value={form.macWifi || ''} onChange={set('macWifi')} placeholder="AA:BB:CC:DD:EE:FF" className={`${inputCls} font-mono`} /></Field>}
       {visible.includes('macEth')          && <Field label="MAC Ethernet"><input value={form.macEth || ''} onChange={set('macEth')} placeholder="AA:BB:CC:DD:EE:FF" className={`${inputCls} font-mono`} /></Field>}
-      {(visible.includes('macEth') || visible.includes('macWifi')) && (
+      {s.nics !== false && (visible.includes('macEth') || visible.includes('macWifi')) && (
         <div className="col-span-2">
           <label className="text-xs font-medium text-slate-500">NICs adicionales</label>
           <div className="space-y-2 mt-1">
