@@ -61,6 +61,20 @@ const EXTRA_STRING_FIELDS = ['ipManagement', 'internalCode', 'nvrChannel', 'came
 // Campos enteros (se parsean aparte).
 const EXTRA_INT_FIELDS = ['megapixels', 'ports'];
 
+// NICs adicionales: sanea estructura (deja solo entradas con MAC). Formato:
+// [{ label, kind: wifi|eth|other, mac }]. No fuerza formato de MAC (info parcial ok).
+function normalizeNics(v) {
+  if (!Array.isArray(v)) return null;
+  const out = v
+    .filter((n) => n && n.mac && String(n.mac).trim() !== '')
+    .map((n) => ({
+      label: n.label ? String(n.label).slice(0, 60) : null,
+      kind: ['wifi', 'eth', 'other'].includes(n.kind) ? n.kind : 'eth',
+      mac: String(n.mac).trim(),
+    }));
+  return out.length ? out : null;
+}
+
 function parseIntOrNull(v) {
   if (v == null || v === '') return null;
   const n = parseInt(v, 10);
@@ -338,6 +352,7 @@ router.post('/', authenticate, requireRole('IT_TECH'), async (req, res, next) =>
           gpu:             b.gpu || null,
           ram:             b.ram || null,
           storage:         b.storage || null,
+          nics:            normalizeNics(b.nics),
           status: ['AVAILABLE', 'REPAIR', 'DAMAGED', 'LOAN'].includes(b.status) ? b.status : 'AVAILABLE',
           condition: ['GOOD', 'FAIR', 'POOR', 'DAMAGED'].includes(b.condition) ? b.condition : 'GOOD',
           locationSlug: b.locationSlug || null,
@@ -409,9 +424,33 @@ router.patch('/:id', authenticate, requireRole('IT_TECH'), async (req, res, next
     if (b.purchaseDate  !== undefined) data.purchaseDate  = b.purchaseDate  ? new Date(b.purchaseDate)  : null;
     if (b.warrantyUntil !== undefined) data.warrantyUntil = b.warrantyUntil ? new Date(b.warrantyUntil) : null;
     if (b.lastRevisionDate !== undefined) data.lastRevisionDate = b.lastRevisionDate ? new Date(b.lastRevisionDate) : null;
+    if (b.categorySlug !== undefined && b.categorySlug !== before.categorySlug) {
+      const cat = await prisma.assetCategory.findUnique({ where: { slug: b.categorySlug } });
+      if (!cat) return res.status(400).json({ error: 'Categoría inválida' });
+      data.categorySlug = b.categorySlug;
+    }
+    if (b.nics !== undefined) data.nics = normalizeNics(b.nics);
 
     const after = await prisma.asset.update({ where: { id }, data, include: ASSET_INCLUDE });
     await audit({ req, action: 'UPDATE', entityType: 'Asset', entityId: id, before, after });
+    res.json({ asset: shape(after) });
+  } catch (err) { next(err); }
+});
+
+// ── POST /assets/:id/regenerate-tag (re-emite el TAG según la categoría actual) ─
+// Bloqueado si el activo ya tiene actas: regenerar rompería esas referencias.
+router.post('/:id/regenerate-tag', authenticate, requireRole('IT_TECH'), async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const asset = await prisma.asset.findUnique({
+      where: { id }, include: { category: true, actas: { select: { id: true }, take: 1 } },
+    });
+    if (!asset) return res.status(404).json({ error: 'Activo no encontrado' });
+    if (asset.actas.length) return res.status(409).json({ error: 'El activo tiene actas generadas; regenerar el TAG rompería esas referencias.' });
+    const before = { tag: asset.tag };
+    const newTag = await computeNextTag(asset.category);
+    const after = await prisma.asset.update({ where: { id }, data: { tag: newTag }, include: ASSET_INCLUDE });
+    await audit({ req, action: 'UPDATE', entityType: 'Asset', entityId: id, before, after: { tag: newTag } });
     res.json({ asset: shape(after) });
   } catch (err) { next(err); }
 });

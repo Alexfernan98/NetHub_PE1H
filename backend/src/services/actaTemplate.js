@@ -60,6 +60,9 @@ function techTable(asset) {
     ['Placa de video (GPU)', asset.gpu],
     ['Especificaciones', asset.details],
   ].filter(([, v, always]) => always || (v != null && String(v).trim() !== ''));
+  if (Array.isArray(asset.nics)) {
+    for (const n of asset.nics) if (n && n.mac) rows.push([`MAC adicional${n.label ? ` · ${n.label}` : ''}`, n.mac]);
+  }
   return `<table class="tech">
     ${rows.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}
   </table>`;

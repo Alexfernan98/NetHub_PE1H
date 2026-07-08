@@ -172,6 +172,7 @@ model Asset {
   gpu               String?        // Placa de video
   ram               String?        // Memoria RAM (texto libre, ej. "16 GB DDR4")
   storage           String?        // Almacenamiento (texto libre, ej. "512 GB SSD")
+  nics              Json?          // NICs adicionales a las MAC principales: [{ label, kind: wifi|eth|other, mac }]
   status            AssetStatus    @default(AVAILABLE)
   condition         AssetCondition @default(GOOD)
   departmentSlug    String?
