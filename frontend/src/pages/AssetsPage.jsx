@@ -225,7 +225,7 @@ export default function AssetsPage() {
         </div>
       </div>
 
-      {selectedId && <AssetDrawer id={selectedId} canWrite={canWrite} users={users} locs={locs} depts={depts} onClose={() => setSelectedId(null)} onRefresh={onRefresh} />}
+      {selectedId && <AssetDrawer id={selectedId} cats={cats} canWrite={canWrite} users={users} locs={locs} depts={depts} onClose={() => setSelectedId(null)} onRefresh={onRefresh} />}
       <NewAssetModal open={showNew} cats={cats} locs={locs} depts={depts} onClose={() => setShowNew(false)} onSaved={(a) => { setShowNew(false); onRefresh(); setSelectedId(a.id); }} />
       <ImportModal open={showImport} cats={cats} locs={locs} depts={depts} onClose={() => setShowImport(false)} onDone={onRefresh} />
       <BarcodeScanner open={showScanner} onDetect={onScanned} onClose={() => setShowScanner(false)} />
@@ -238,7 +238,7 @@ function KV({ label, children }) {
   return <div className="flex justify-between gap-4 py-1.5 border-b border-slate-50 last:border-0"><dt className="text-sm text-slate-500">{label}</dt><dd className="text-sm text-slate-800 text-right">{children ?? '—'}</dd></div>;
 }
 
-function AssetDrawer({ id, canWrite, users, locs, depts, onClose, onRefresh }) {
+function AssetDrawer({ id, cats, canWrite, users, locs, depts, onClose, onRefresh }) {
   const { user: me } = useAuthStore();
   const confirm = useConfirm();
   const canDelete = ['IT_ADMIN', 'SUPER_ADMIN'].includes(me?.role);
