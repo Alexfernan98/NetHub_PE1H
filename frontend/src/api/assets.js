@@ -5,6 +5,7 @@ export const assetsApi = {
   get:       (id)          => api.get(`/assets/${id}`).then(r => r.data),
   create:    (body)        => api.post('/assets', body).then(r => r.data.asset),
   update:    (id, body)    => api.patch(`/assets/${id}`, body).then(r => r.data.asset),
+  regenerateTag: (id)      => api.post(`/assets/${id}/regenerate-tag`).then(r => r.data.asset),
   changeStatus: (id, body) => api.patch(`/assets/${id}/status`, body).then(r => r.data.asset),
   assign:    (id, body)    => api.post(`/assets/${id}/assign`, body).then(r => r.data.asset),
   unassign:  (id, body)    => api.post(`/assets/${id}/unassign`, body).then(r => r.data.asset),

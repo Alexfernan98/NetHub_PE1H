@@ -272,9 +272,11 @@ La versión se muestra en el sidebar y se lee de `frontend/package.json` →
 `version`. `backend/package.json` debe llevar la **misma versión** para
 mantenerlas en sync.
 
-**Cuándo bumpear** (antes de mergear a `main`):
-- `PATCH` (0.7.**1**) — bugfix sin features nuevas visibles al usuario.
-- `MINOR` (0.**8**.0) — feature visible (ej. equipos compartidos, módulo nuevo).
+**Cuándo bumpear** (antes de mergear a `main`) — criterio del owner:
+- `PATCH` (0.8.**1**) — bugfix **o mejora sobre un módulo YA EXISTENTE**, aunque
+  sume campos/opciones visibles (ej. specs de hardware o "cambiar tipo" en Inventario).
+- `MINOR` (0.**9**.0) — **módulo nuevo** o feature grande transversal
+  (ej. off-boarding, licencias).
 - `MAJOR` (**1**.0.0) — sólo cuando el sistema está estable en producción
   para todos los empleados (deploy en VM + backups + alta real de activos).
 
