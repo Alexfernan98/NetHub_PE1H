@@ -12,17 +12,16 @@ de IT, Networking, NOC y Ciberseguridad.
 
 ## Hito actual
 
-**Última release a `main`**: 2026-07-02 — **v0.8.0** (Sprint 1 · inventario de infraestructura + Almacén)
+**Última release a `main`**: 2026-07-03 — **v0.8.1** (mejoras al módulo Inventario)
 
-**Novedades v0.8.0 (Sprint 1)**
-- 🆕 **Inventario más allá de IT**: categorías de **Networking** (switch, firewall, AP), **CCTV** (cámaras) y **Servidores/DC** (server, UPS, rack), con campos propios por tipo (IP de gestión, puertos, rol, tipo de cámara, canal NVR, HA, etc.).
-- 🆕 **Estado "En producción"** para infraestructura instalada; filtro por **dominio** (IT / Networking / CCTV / DC).
-- 🆕 **Módulo Almacén**: stock por cantidad con grupos gestionables, consumibles vs convertibles, movimientos (entrada/salida/ajuste) con bitácora, y alerta de stock bajo.
-- 🆕 **Poner en producción / Dar de alta desde stock**: un ítem convertible genera un activo con TAG automático y descuenta stock, en una transacción.
-- 🆕 **Import masivo con plantilla Excel** (dropdowns de Estado/Condición/Tipo/Ubicación/Grupo) para activos y almacén; TAG autogenerado.
-- 🆕 Mensajes de error claros para datos duplicados (serial/barcode/etc.).
+**Novedades v0.8.1**
+- 🆕 **Specs de hardware** (CPU / GPU / RAM / almacenamiento) en PC, notebook y servidor — en formulario, detalle, acta e import.
+- 🆕 **Cambiar el tipo (categoría)** de un activo desde edición; el TAG se mantiene por defecto, con botón para **regenerarlo** (bloqueado si el activo ya tiene actas).
+- 🆕 **Múltiples NICs** por activo, además de las MAC WiFi/Ethernet principales.
+- 🆕 **Columna "Firma"** en el acta de equipo compartido.
+- 🔧 **Fix de acceso móvil**: el certificado cubre hosts `<algo>.<ip>.nip.io` + acceso por IP directa.
 
-**Release anterior**: v0.7.0 (2026-06-18) — equipos compartidos, restaurar bajas, sort/filtros consistentes, versionado SemVer.
+**Release anterior**: v0.8.0 (2026-07-02) — Sprint 1: inventario de infraestructura (Networking/CCTV/DC) + módulo Almacén + import Excel con plantilla.
 
 **Lo que está desplegado** (Fases 1-5 + Etapa 2 de Actas + v0.8.0):
 - ✅ **Almacén / Stock**: repuestos y consumibles por cantidad, grupos gestionables,
