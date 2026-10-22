@@ -12,16 +12,12 @@ de IT, Networking, NOC y Ciberseguridad.
 
 ## Hito actual
 
-**Última release a `main`**: 2026-07-03 — **v0.8.1** (mejoras al módulo Inventario)
+**Última release a `main`**: 2026-10-22 — **v0.8.2** (mejora al módulo Inventario)
 
-**Novedades v0.8.1**
-- 🆕 **Specs de hardware** (CPU / GPU / RAM / almacenamiento) en PC, notebook y servidor — en formulario, detalle, acta e import.
-- 🆕 **Cambiar el tipo (categoría)** de un activo desde edición; el TAG se mantiene por defecto, con botón para **regenerarlo** (bloqueado si el activo ya tiene actas).
-- 🆕 **Múltiples NICs** por activo, además de las MAC WiFi/Ethernet principales.
-- 🆕 **Columna "Firma"** en el acta de equipo compartido.
-- 🔧 **Fix de acceso móvil**: el certificado cubre hosts `<algo>.<ip>.nip.io` + acceso por IP directa.
+**Novedades v0.8.2**
+- 🆕 **Código de barras en el export CSV** del inventario (columna `barcode`, junto al TAG).
 
-**Release anterior**: v0.8.0 (2026-07-02) — Sprint 1: inventario de infraestructura (Networking/CCTV/DC) + módulo Almacén + import Excel con plantilla.
+**Release anterior**: v0.8.1 (2026-07-03) — Inventario: specs de hardware (CPU/GPU/RAM/almacenamiento), cambio de tipo de activo + regenerar TAG, múltiples NICs, columna "Firma" en acta de equipo compartido, fix de acceso móvil. Antes: v0.8.0 (2026-07-02) — Sprint 1: inventario de infraestructura + módulo Almacén + import Excel con plantilla.
 
 **Lo que está desplegado** (Fases 1-5 + Etapa 2 de Actas + v0.8.0):
 - ✅ **Almacén / Stock**: repuestos y consumibles por cantidad, grupos gestionables,
