@@ -153,7 +153,7 @@ router.get('/export', authenticate, requireRole('IT_TECH'), async (req, res, nex
   try {
     const where = buildWhere(req);
     const assets = await prisma.asset.findMany({ where, include: ASSET_INCLUDE, orderBy: { tag: 'asc' } });
-    const cols = ['tag', 'categorySlug', 'brand', 'model', 'serialNumber', 'status', 'condition',
+    const cols = ['tag', 'barcode', 'categorySlug', 'brand', 'model', 'serialNumber', 'status', 'condition',
       'departmentSlug', 'locationSlug', 'assignedTo', 'warrantyUntil'];
     const head = cols.join(',');
     const lines = assets.map(shape).map(a => cols.map(c => {
