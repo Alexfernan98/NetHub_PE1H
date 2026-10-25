@@ -1,6 +1,6 @@
 version: "3.9"
 
-# TechOpsHub — Docker Compose (Mac M2 / ARM64)
+# TechOpsHub — Docker Compose (multi-arch: Mac M2 arm64 / VM x86_64)
 # Levanta: PostgreSQL 16 + Backend (Node 24) + Frontend (Vite) + Nginx
 
 services:
@@ -9,7 +9,6 @@ services:
   # ─────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
-    platform: linux/arm64
     container_name: techops_postgres
     restart: unless-stopped
     environment:
@@ -35,8 +34,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      platforms:
-        - linux/arm64
     container_name: techops_backend
     restart: unless-stopped
     env_file: .env
@@ -65,8 +62,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      platforms:
-        - linux/arm64
     container_name: techops_frontend
     restart: unless-stopped
     # No seteamos VITE_API_URL por default: el frontend toma window.location.origin
@@ -90,7 +85,6 @@ services:
   # ─────────────────────────────────────────────
   nginx:
     image: nginx:alpine
-    platform: linux/arm64
     container_name: techops_nginx
     restart: unless-stopped
     ports:
