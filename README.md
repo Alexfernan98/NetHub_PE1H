@@ -12,12 +12,13 @@ de IT, Networking, NOC y Ciberseguridad.
 
 ## Hito actual
 
-**Última release a `main`**: 2026-10-22 — **v0.8.2** (mejora al módulo Inventario)
+**Última release a `main`**: 2026-10-25 — **v0.8.3** (mantenimiento de infraestructura)
 
-**Novedades v0.8.2**
-- 🆕 **Código de barras en el export CSV** del inventario (columna `barcode`, junto al TAG).
+**Novedades v0.8.3**
+- 🔧 **Node.js 20 → 24** en las imágenes de backend y frontend (Node 20 quedó sin soporte).
+- 🔒 **Puertos de DB y app** (5432, 4000, 3000) publicados solo en loopback; el acceso es por nginx (80/443).
 
-**Release anterior**: v0.8.1 (2026-07-03) — Inventario: specs de hardware (CPU/GPU/RAM/almacenamiento), cambio de tipo de activo + regenerar TAG, múltiples NICs, columna "Firma" en acta de equipo compartido, fix de acceso móvil. Antes: v0.8.0 (2026-07-02) — Sprint 1: inventario de infraestructura + módulo Almacén + import Excel con plantilla.
+**Release anterior**: v0.8.2 (2026-10-22) — código de barras en el export CSV del inventario. Antes: v0.8.1 (2026-07-03) — specs de hardware, cambio de tipo de activo, múltiples NICs, columna "Firma" en acta compartida, fix de acceso móvil.
 
 **Lo que está desplegado** (Fases 1-5 + Etapa 2 de Actas + v0.8.0):
 - ✅ **Almacén / Stock**: repuestos y consumibles por cantidad, grupos gestionables,
