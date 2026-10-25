@@ -12,11 +12,13 @@ de IT, Networking, NOC y Ciberseguridad.
 
 ## Hito actual
 
-**Última release a `main`**: 2026-10-25 — **v0.8.3** (mantenimiento de infraestructura)
+**Última release a `main`**: 2026-10-25 — **v0.8.4** (mantenimiento de infraestructura)
 
-**Novedades v0.8.3**
+**Novedades v0.8.4**
 - 🔧 **Node.js 20 → 24** en las imágenes de backend y frontend (Node 20 quedó sin soporte).
 - 🔒 **Puertos de DB y app** (5432, 4000, 3000) publicados solo en loopback; el acceso es por nginx (80/443).
+- 🛠️ **Build multi-arquitectura**: se quitaron los pines `linux/arm64`; Docker usa la plataforma del host (arm64 en el Mac, x86_64 en la VM), sin parches manuales en la VM.
+- ℹ️ La v0.8.3 quedó solo como tag (no se desplegó): su build fijaba arm64.
 
 **Release anterior**: v0.8.2 (2026-10-22) — código de barras en el export CSV del inventario. Antes: v0.8.1 (2026-07-03) — specs de hardware, cambio de tipo de activo, múltiples NICs, columna "Firma" en acta compartida, fix de acceso móvil.
 
